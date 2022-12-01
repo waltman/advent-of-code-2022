@@ -9,7 +9,7 @@ with open(argv[1]) as f:
         else:
             calories.append(elf)
             elf = 0
-
 calories.append(elf)
+
 print('Part 1:', max(calories))
 print('Part 2:', sum(sorted(calories)[-3:]))
