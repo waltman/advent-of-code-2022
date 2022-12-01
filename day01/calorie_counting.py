@@ -4,8 +4,7 @@ calories = []
 with open(argv[1]) as f:
     elf = 0
     for line in f:
-        line = line.rstrip()
-        if line:
+        if line := line.rstrip():
             elf += int(line)
         else:
             calories.append(elf)
