@@ -1,10 +1,7 @@
 from sys import argv
 
 def priority(ch):
-    if 'a' <= ch <= 'z':
-        return ord(ch) - ord('a') + 1
-    else:
-        return ord(ch) - ord('A') + 27
+    return ord(ch) - ord('a') + 1 if 'a' <= ch <= 'z' else ord(ch) - ord('A') + 27
 
 def common_item(c1, c2):
     return list({c for c in c1} & {c for c in c2})[0]
