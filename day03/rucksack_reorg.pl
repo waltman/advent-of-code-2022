@@ -7,9 +7,7 @@ sub priority($c) {
 }
 
 sub common_item($c1, $c2) {
-    my $s1 = Set::Scalar->new(@$c1);
-    my $s2 = Set::Scalar->new(@$c2);
-    return ($s1 * $s2)->[0];
+    return (Set::Scalar->new(@$c1) * Set::Scalar->new(@$c2))->[0];
 }
 
 sub group_badge($rucks) {
