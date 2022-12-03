@@ -13,9 +13,9 @@ sub common_item($c1, $c2) {
 }
 
 sub group_badge($rucks) {
-    my $common = Set::Scalar->new(@{$rucks->[0]});
-    for my $i (1..$#$rucks) {
-        $common *= Set::Scalar->new(@{$rucks->[$i]});
+    my $common = Set::Scalar->new($rucks->[0]->@*);
+    for my $i (1..$rucks->$#*) {
+        $common *= Set::Scalar->new($rucks->[$i]->@*);
     }
     return $common->[0];
 }
