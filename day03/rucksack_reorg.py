@@ -10,7 +10,9 @@ def common_item(c1, c2):
     return list({c for c in c1} & {c for c in c2})[0]
 
 def group_badge(rucks):
-    common = {c for c in rucks[0]} & {c for c in rucks[1]} & {c for c in rucks[2]}
+    common = {c for c in rucks[0]}
+    for i in range(1,len(rucks)):
+        common &= {c for c in rucks[i]}
     return list(common)[0]
 
 score = 0
