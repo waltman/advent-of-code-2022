@@ -20,14 +20,8 @@ def overlap(elf):
     else:
         return False
 
-elves = []
 with open(argv[1]) as f:
-    for line in f:
-        toks = line.rstrip().split(',')
-        pair = []
-        for tok in toks:
-            pair.append([int(x) for x in tok.split('-')])
-        elves.append(pair)
+    elves = [[[int(x) for x in tok.split('-')] for tok in line.rstrip().split(',')] for line in f]
 
 contains_count = 0
 overlap_count = 0
