@@ -2,7 +2,7 @@
 use v5.36;
 
 package Dir;
-use List::Util qw(sum);
+use List::Util qw(sum0);
 
 sub new($package, $name, $parent) {
     my $self = {};
@@ -11,14 +11,16 @@ sub new($package, $name, $parent) {
     $self->{name} = $name;
     $self->{parent} = $parent;
     $self->{files_size} = 0;
-    $self->{children} = ();
+    $self->{children} = {};
 
     return $self;
 }
 
 sub size($self) {
-    return $self->{files_size} + sum (map {$_->{files_size}} values %{$self->{children}});
+    return $self->{files_size} + sum0 map {$_->size()} values $self->{children}->%*;
 }
+
+package main;
 
 my $root = Dir->new('/', undef);
 my $pwd = $root;
@@ -51,7 +53,6 @@ my @queue = ($root);
 
 while (@queue) {
     my $subdir = pop @queue;
-    say "$subdir->{name}";
     my $size = $subdir->size();
     if ($size <= 100000) {
         $part1_sum += $size;
@@ -60,3 +61,4 @@ while (@queue) {
         push @queue, $child;
     }
 }
+say "Part 1: ", $part1_sum;
