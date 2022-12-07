@@ -16,9 +16,6 @@ class Dir:
         return sum([f.size for f in self.files]) + sum([child.size() for child in self.children.values()])
 
 root = Dir('/', None)
-dirs = {
-    '/': root,
-}
 pwd = root
 
 with open(argv[1]) as f:
@@ -37,14 +34,17 @@ with open(argv[1]) as f:
         else: # directory listing
             if toks[0] == 'dir':
                 pwd.children[toks[1]] = Dir(toks[1], pwd)
-                dirs[toks[1]] = pwd.children[toks[1]]
             else:
                 pwd.files.append(File(toks[1], int(toks[0])))
 
 part1_sum = 0
-for k in dirs.keys():
-    val = dirs[k].size()
-    print(k, val)
-    if val <= 100000:
-        part1_sum += val
+queue = [root]
+while queue:
+    subdir = queue.pop()
+    size = subdir.size()
+    if size <= 100000:
+        part1_sum += size
+    for child in subdir.children.values():
+        queue.append(child)
+
 print('Part 1:', part1_sum)
