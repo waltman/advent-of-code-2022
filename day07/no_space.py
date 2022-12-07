@@ -8,7 +8,7 @@ class Dir:
         self.children = dict()
 
     def size(self) :
-        return self.files_size + sum([child.size() for child in self.children.values()])
+        return self.files_size + sum(map(lambda x: x.size(), self.children.values()))
 
 root = Dir('/', None)
 pwd = root
