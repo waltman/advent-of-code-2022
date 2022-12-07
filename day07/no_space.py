@@ -39,12 +39,21 @@ with open(argv[1]) as f:
 
 part1_sum = 0
 queue = [root]
+TOTAL_SPACE = 70000000
+NEEDED_SPACE = 30000000
+unused = TOTAL_SPACE - root.size()
+target = NEEDED_SPACE - unused
+targets = []
+
 while queue:
     subdir = queue.pop()
     size = subdir.size()
     if size <= 100000:
         part1_sum += size
+    if size >= target:
+        targets.append(size)
     for child in subdir.children.values():
         queue.append(child)
 
 print('Part 1:', part1_sum)
+print('Part 2:', min(targets))
