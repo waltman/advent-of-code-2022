@@ -43,7 +43,7 @@ TOTAL_SPACE = 70000000
 NEEDED_SPACE = 30000000
 unused = TOTAL_SPACE - root.size()
 target = NEEDED_SPACE - unused
-targets = []
+min_target = 1e300
 
 while queue:
     subdir = queue.pop()
@@ -51,9 +51,9 @@ while queue:
     if size <= 100000:
         part1_sum += size
     if size >= target:
-        targets.append(size)
+        min_target = min(min_target, size)
     for child in subdir.children.values():
         queue.append(child)
 
 print('Part 1:', part1_sum)
-print('Part 2:', min(targets))
+print('Part 2:', min_target)
