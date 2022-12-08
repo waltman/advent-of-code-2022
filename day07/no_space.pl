@@ -50,6 +50,11 @@ while (<>) {
 
 my $part1_sum;
 my @queue = ($root);
+my $TOTAL_SPACE = 70000000;
+my $NEEDED_SPACE = 30000000;
+my $unused = $TOTAL_SPACE - $root->size();
+my $target = $NEEDED_SPACE - $unused;
+my $min_target = 1e300;
 
 while (@queue) {
     my $subdir = pop @queue;
@@ -57,8 +62,12 @@ while (@queue) {
     if ($size <= 100000) {
         $part1_sum += $size;
     }
+    if ($size >= $target) {
+        $min_target = $size if $size < $min_target;
+    }
     for my $child (values %{$subdir->{children}}) {
         push @queue, $child;
     }
 }
 say "Part 1: ", $part1_sum;
+say "Part 2: ", $min_target;
