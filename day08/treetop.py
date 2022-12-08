@@ -4,11 +4,11 @@ import numpy as np
 def is_visible(grid, row, col):
     if grid[row,col] > max(grid[0:row,col], default=0): # up
         return True
-    elif grid[row,col] > max(grid[row+1:,col]), default=0: # down
+    elif grid[row,col] > max(grid[row+1:,col], default=0): # down
         return True
-    elif grid[row,col] > max(grid[row,0:col]), default=0: # left
+    elif grid[row,col] > max(grid[row,0:col], default=0): # left
         return True
-    elif grid[row,col] > max(grid[row,col+1:]), default=0: # right
+    elif grid[row,col] > max(grid[row,col+1:], default=0): # right
         return True
     else:
         return False
