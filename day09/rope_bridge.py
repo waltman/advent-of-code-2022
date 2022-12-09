@@ -9,15 +9,19 @@ def tail_move(dr, dc):
 
         (+1,+2): (+1,+1),
         (+2,+1): (+1,+1),
+        (+2,+2): (+1,+1),
 
         (+1,-2): (+1,-1),
         (+2,-1): (+1,-1),
+        (+2,-2): (+1,-1),
 
         (-1,-2): (-1,-1),
         (-2,-1): (-1,-1),
+        (-2,-2): (-1,-1),
 
         (-2,+1): (-1,+1),
         (-1,+2): (-1,+1),
+        (-2,+2): (-1,+1),
     }
 
     if abs(dr) < 2 and abs(dc) < 2:
@@ -28,31 +32,37 @@ def tail_move(dr, dc):
         print("Can't find", dr, dc)
         return (0,0)
 
-head_move = {
-    'R': (0,+1),
-    'L': (0,-1),
-    'U': (+1,0),
-    'D': (-1,0),
-    }
+def run_sim(lines, num_knots):
+    head_move = {
+        'R': (0,+1),
+        'L': (0,-1),
+        'U': (+1,0),
+        'D': (-1,0),
+        }
 
-hpos = [0,0]
-tpos = [0,0]
-seen = set()
-seen.add(tuple(tpos))
-
-with open(argv[1]) as f:
-    for line in f:
-        direct, cnt = line.rstrip().split(' ')
+    knots = [[0,0] for _ in range(num_knots)]
+    hpos = [0,0]
+    tpos = [0,0]
+    seen = set()
+    for line in lines:
+        direct, cnt = line.split(' ')
         cnt = int(cnt)
         for i in range(cnt):
-            hdr, hdc = head_move[direct]
-            hpos[0] += hdr
-            hpos[1] += hdc
-            tdr, tdc = tail_move(hpos[0] - tpos[0], hpos[1] - tpos[1])
-            tpos[0] += tdr
-            tpos[1] += tdc
-            seen.add(tuple(tpos))
+            dr, dc = head_move[direct]
+            knots[0][0] += dr
+            knots[0][1] += dc
+            for j in range(1, num_knots):
+                dr, dc = tail_move(knots[j-1][0] - knots[j][0], knots[j-1][1] - knots[j][1])
+                knots[j][0] += dr
+                knots[j][1] += dc
+            seen.add(tuple(knots[-1]))
 
-print('Part 1:', len(seen))
+    return len(seen)
+
+with open(argv[1]) as f:
+    lines = [line.rstrip() for line in f]
+    
+print('Part 1:', run_sim(lines, 2))
+print('Part 2:', run_sim(lines, 10))
 
             
