@@ -9,7 +9,7 @@ cycle = 1
 ip = 0
 skip = True
 strengths = 0
-crt = ['.'] * 240
+crt = [' '] * 240
 while True:
     if cycle % 40 == 20:
         strengths += cycle * X
