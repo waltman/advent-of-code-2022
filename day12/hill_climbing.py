@@ -26,6 +26,7 @@ def bfs(grid, start, finish):
             if neighbor not in seen and ord(grid[neighbor[0],neighbor[1]]) - ord(grid[row,col]) <= 1:
                 seen.add((neighbor[0], neighbor[1]))
                 queue.append((neighbor[0], neighbor[1], steps+1))
+    return 1e300
 
 # read the grid into a numpy array
 with open(sys.argv[1]) as f:
@@ -43,3 +44,11 @@ for row in range(rows):
             grid[row,col] = 'z'
 
 print('Part 1:', bfs(grid, start, finish))
+
+# find all the low points
+lows = []
+for row in range(rows):
+    for col in range(cols):
+        if grid[row,col] == 'a':
+            lows.append((row,col))
+print('Part 2:', min(map(lambda x: bfs(grid, x, finish), lows)))
