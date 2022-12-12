@@ -12,6 +12,21 @@ def neighbors(row, col, shape):
     if col < shape[1]-1:
         yield row, col+1
 
+def bfs(grid, start, finish):
+    seen = set()
+    queue = deque()
+    queue.append((start[0], start[1], 0))
+    while queue:
+        row, col, steps = queue.popleft()
+        if (row, col) == finish:
+            return steps
+
+        seen.add((row, col))
+        for neighbor in neighbors(row, col, grid.shape):
+            if neighbor not in seen and ord(grid[neighbor[0],neighbor[1]]) - ord(grid[row,col]) <= 1:
+                seen.add((neighbor[0], neighbor[1]))
+                queue.append((neighbor[0], neighbor[1], steps+1))
+
 # read the grid into a numpy array
 with open(sys.argv[1]) as f:
     grid = np.array([[c for c in line.rstrip()] for line in f])
@@ -27,19 +42,4 @@ for row in range(rows):
             finish = row,col
             grid[row,col] = 'z'
 
-# now do a BFS until we find the finish
-seen = set()
-queue = deque()
-queue.append((start[0], start[1], 0))
-while queue:
-    row, col, steps = queue.popleft()
-    if (row, col) == finish:
-        print('Part 1:', steps)
-        break
-    
-    seen.add((row, col))
-    for neighbor in neighbors(row, col, grid.shape):
-        if neighbor not in seen and ord(grid[neighbor[0],neighbor[1]]) - ord(grid[row,col]) <= 1:
-            seen.add((neighbor[0], neighbor[1]))
-            queue.append((neighbor[0], neighbor[1], steps+1))
-
+print('Part 1:', bfs(grid, start, finish))
