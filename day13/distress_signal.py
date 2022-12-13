@@ -49,9 +49,6 @@ all_packets.append([[6]])
 sorted_packets = sorted(all_packets, key=functools.cmp_to_key(right_order))[::-1]
 product = 1
 for i in range(len(sorted_packets)):
-    if sorted_packets[i] == [[2]]:
+    if sorted_packets[i] in [[[2]], [[6]]]:
         product *= i+1
-    elif sorted_packets[i] == [[6]]:
-        product *= i+1
-print(sorted_packets)
 print('Part 2:', product)
