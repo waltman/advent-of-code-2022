@@ -1,4 +1,5 @@
 from sys import argv
+import functools
 
 def right_order(left, right):
     if type(left) == int and type(right) == int:
@@ -28,19 +29,29 @@ def right_order(left, right):
 index_sum = 0
 with open(argv[1]) as f:
     packets = []
+    all_packets = []
     index = 1
     for line in f:
         line = line.rstrip()
         if line:
             packets.append(eval(line))
+            all_packets.append(packets[-1])
             if len(packets) == 2:
-#                print(f'comparing {packets[0]} and {packets[1]}')
                 res = right_order(packets[0], packets[1])
-                # print('result:', res)
-                # packets = []
                 if right_order(packets[0], packets[1]) == 1:
                     index_sum += index
                 index += 1
                 packets = []
 
 print('Part 1:', index_sum)
+all_packets.append([[2]])
+all_packets.append([[6]])
+sorted_packets = sorted(all_packets, key=functools.cmp_to_key(right_order))[::-1]
+product = 1
+for i in range(len(sorted_packets)):
+    if sorted_packets[i] == [[2]]:
+        product *= i+1
+    elif sorted_packets[i] == [[6]]:
+        product *= i+1
+print(sorted_packets)
+print('Part 2:', product)
