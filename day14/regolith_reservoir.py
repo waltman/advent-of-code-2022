@@ -2,7 +2,7 @@ from sys import argv
 import numpy as np
 from itertools import product
 
-grid = np.array([['.' for _ in range(505)] for _ in range(11)])
+grid = np.array([['.' for _ in range(530)] for _ in range(170)])
 min_col = 1e300
 max_col = -1e300
 max_row = -1e300
