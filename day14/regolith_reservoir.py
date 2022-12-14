@@ -2,6 +2,12 @@ from sys import argv
 import numpy as np
 from itertools import product
 
+def print_grid(grid, max_row, max_col):
+    for row in range(max_row+1):
+        for col in range(min_col, max_col+1):
+            print(grid[row,col], end='')
+        print()
+
 grid = np.array([['.' for _ in range(530)] for _ in range(170)])
 min_col = 1e300
 max_col = -1e300
@@ -21,7 +27,4 @@ with open(argv[1]) as f:
             for row, col in product(row_range, col_range):
                 grid[row,col] = '#'
 
-for row in range(max_row+1):
-    for col in range(min_col, max_col+1):
-        print(grid[row,col], end='')
-    print()
+print_grid(grid, row, col)
