@@ -2,7 +2,7 @@ from sys import argv
 import numpy as np
 from itertools import product
 
-def print_grid(grid, max_row, max_col):
+def print_grid(grid, max_row, min_col, max_col):
     for row in range(max_row+1):
         for col in range(min_col, max_col+1):
             print(grid[row,col], end='')
@@ -27,4 +27,29 @@ with open(argv[1]) as f:
             for row, col in product(row_range, col_range):
                 grid[row,col] = '#'
 
-print_grid(grid, row, col)
+print_grid(grid, max_row, min_col, max_col)
+
+sand = 0
+while True:
+    row = 0
+    col = 500
+    while True:
+        if row > max_row:
+            break
+        if grid[row+1,col] == '.':
+            row += 1
+        elif grid[row+1,col-1] == '.':
+            row += 1
+            col -= 1
+        elif grid[row+1,col+1] == '.':
+            row += 1
+            col += 1
+        else:
+            grid[row,col] = 'o'
+            sand += 1
+            break
+    if row > max_row:
+        break
+
+print_grid(grid, max_row, min_col, max_col)
+print('Part 1:', sand)
