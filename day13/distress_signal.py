@@ -46,7 +46,7 @@ with open(argv[1]) as f:
 print('Part 1:', index_sum)
 all_packets.append([[2]])
 all_packets.append([[6]])
-sorted_packets = sorted(all_packets, key=functools.cmp_to_key(right_order))[::-1]
+sorted_packets = sorted(all_packets, key=functools.cmp_to_key(right_order), reverse=True)
 product = 1
 for i in range(len(sorted_packets)):
     if sorted_packets[i] in [[[2]], [[6]]]:
