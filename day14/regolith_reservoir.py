@@ -24,8 +24,7 @@ with open(argv[1]) as f:
         for i in range(1, len(points)):
             row_range = range(min(points[i-1][0], points[i][0]), max(points[i-1][0], points[i][0])+1)
             col_range = range(min(points[i-1][1], points[i][1]), max(points[i-1][1], points[i][1])+1)
-            for row, col in product(row_range, col_range):
-                grid[row,col] = '#'
+            grid[row_range,col_range] = '#'
 
 print_grid(grid, max_row, min_col, max_col)
 
