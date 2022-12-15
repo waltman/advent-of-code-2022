@@ -8,8 +8,11 @@ class Sensor:
         self.brow = int(brow)
         self.bcol = int(bcol)
 
+    def dist(self):
+        return abs(self.srow - self.brow) + abs(self.scol - self.bcol)
+
     def __repr__(self):
-        return f'sensor:({self.srow},{self.scol}) beacon:({self.brow},{self.bcol})'
+        return f'sensor:({self.srow},{self.scol}) beacon:({self.brow},{self.bcol}) dist:{self.dist()}'
 
 sensors = []
 with open(argv[1]) as f:
