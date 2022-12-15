@@ -25,6 +25,7 @@ class Sensor:
     def __repr__(self):
         return f'sensor:({self.srow},{self.scol}) beacon:({self.brow},{self.bcol}) dist:{self.dist()}'
 
+# a nice range union function I found at https://stackoverflow.com/questions/15273693/union-of-multiple-ranges
 def union(data):
     union = []
     for begin,end in sorted(data):
@@ -66,4 +67,3 @@ for row in range(range_max):
     if len(merged) > 1:
         print('Part 2:', (merged[0][1]+1) * 4000000 + row)
         break
-
