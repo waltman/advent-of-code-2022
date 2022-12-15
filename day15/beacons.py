@@ -1,6 +1,5 @@
 from sys import argv
 import re
-from sympy import Interval, Union
 
 class Sensor:
     def __init__(self, srow, scol, brow, bcol):
@@ -27,13 +26,6 @@ class Sensor:
         return f'sensor:({self.srow},{self.scol}) beacon:({self.brow},{self.bcol}) dist:{self.dist()}'
 
 def union(data):
-    """ Union of a list of intervals e.g. [(1,2),(3,4)] """
-    intervals = [Interval(begin, end) for (begin, end) in data]
-    u = Union(*intervals)
-    return u.args[:2] if isinstance(u, Interval) \
-       else u.args
-
-def union2(data):
     union = []
     for begin,end in sorted(data):
         if union and union[-1][1] >= begin - 1:
@@ -41,8 +33,6 @@ def union2(data):
         else:
             union.append([begin, end])
     return union
-    
-
 
 infile = argv[1]
 target = int(argv[2])
@@ -62,14 +52,9 @@ for sensor in sensors:
 # remove and cols that actually contain a beacon
 for sensor in sensors:
     if sensor.brow == target and sensor.bcol in free_cols:
-#        print('removing', sensor, 'free_cols', free_cols)
         free_cols.remove(sensor.bcol)
 
-#print(free_cols, len(free_cols))
 print('Part 1:', len(free_cols))
-
-# for sensor in sensors:
-#     print(sensor)
 
 for row in range(range_max):
     ranges = []
@@ -77,26 +62,8 @@ for row in range(range_max):
         if sensor.can_see(row):
             ranges.append(sensor.start_end_on(row))
 
-    merged = union2(ranges)
-#    print(row, merged)
+    merged = union(ranges)
     if len(merged) > 1:
-        print('Part 2', (merged[0][1]+1) * 4000000 + row)
+        print('Part 2:', (merged[0][1]+1) * 4000000 + row)
         break
-    # if type(merged[0]) == Interval:
-    #     print('Part 2', merged[0].end * 4000000 + row)
-    #     break
-    # if free_cols:
-    #     print(row, free_cols)
-    #     print('Part 2', list(free_cols)[0] * 4000000 + row)
-    #     break
-
-#for sensor in sensors:
-#    print(sensor)
-
-# print(sensors[6])
-# for row in range(-3, 18):
-#     if sensors[6].can_see(row):
-#         print(row, sensors[6].range_on(row))
-#     else:
-#         print(row, [])
 
