@@ -23,6 +23,20 @@ def make_graphviz(valves):
     gv += '}'
     return gv
 
+def closed_dict2str(valves, closed):
+    res = ''
+    for k in sorted(valves.keys()):
+        res += '1' if closed[k] else '0'
+    return res
+
+def closed_str2dict(valves, closed_str):
+    closed = {}
+    keys = sorted(valves.keys())
+    for i in range(len(keys)):
+        closed[keys[i]] = True if closed_str[i] == '1' else False
+    return closed
+
+
 # parse the input
 valves = {}
 with open(argv[1]) as f:
@@ -36,7 +50,36 @@ with open(argv[1]) as f:
 # for name in valves.keys():
 #     print(valves[name])
 
-print(make_graphviz(valves))
+#print(make_graphviz(valves))
+
+best_score = 0
+closed = {name: True for name in valves.keys()}
+stack = [(1, 'AA', 0, 0, set(), closed)]
+while stack:
+    time, name, rate, score, state, closed = stack.pop()
+#    print(time, name, rate, score, state, closed)
+    print(time, name, rate, score)
+    state.add((name, rate))
+        
+    if time > 30:
+        if score > best_score:
+            best_score = score
+            print('new best score!', best_score)
+    else:
+        stuck = True
+        for tunnel in valves[name].tunnels:
+            if (tunnel, rate) not in state:
+                stack.append((time+1, tunnel, rate, score+rate, state, closed))
+                stuck = False
+        if closed[name] and valves[name].rate > 0:
+            closed[name] = False
+            stack.append((time+1, name, rate + valves[name].rate, score+rate, state, closed))
+            stuck = False
+        if stuck:
+            stack.append((time+1, name, rate, score+rate, state, closed))
+                
+print('Part 1:', best_score)
+    
 
 # best_score = 0
 # stack = [('AA', 0, set(), 0, 0)]
