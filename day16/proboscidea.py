@@ -1,5 +1,6 @@
 from sys import argv
 import re
+from copy import copy
 
 class Valve:
     def __init__(self, name, rate, tunnels):
@@ -54,29 +55,40 @@ with open(argv[1]) as f:
 
 best_score = 0
 closed = {name: True for name in valves.keys()}
-stack = [(1, 'AA', 0, 0, set(), closed)]
+stack = [(1, 'AA', 0, 0, set(), closed, [])]
 while stack:
-    time, name, rate, score, state, closed = stack.pop()
+    time, name, rate, score, old_state, old_closed, old_path = stack.pop()
 #    print(time, name, rate, score, state, closed)
-    print(time, name, rate, score)
+#    print(time, name, rate, score, old_path)
+    state = copy(old_state)
     state.add((name, rate))
+    path = copy(old_path)
+    path.append(name[0])
+    closed = copy(old_closed)
+    if name == 'EE' and rate == 76:
+        pass
         
     if time > 30:
         if score > best_score:
             best_score = score
             print('new best score!', best_score)
+#        else:
+#            print('score =', score)
     else:
         stuck = True
         for tunnel in valves[name].tunnels:
             if (tunnel, rate) not in state:
-                stack.append((time+1, tunnel, rate, score+rate, state, closed))
+#                print('pushing', (tunnel, rate))
+                stack.append((time+1, tunnel, rate, score+rate, state, closed, path))
                 stuck = False
         if closed[name] and valves[name].rate > 0:
-            closed[name] = False
-            stack.append((time+1, name, rate + valves[name].rate, score+rate, state, closed))
+            new_closed = copy(closed)
+            new_closed[name] = False
+#            print('open pushing', (name, rate + valves[name].rate))
+            stack.append((time+1, name, rate + valves[name].rate, score+rate, state, new_closed, path))
             stuck = False
         if stuck:
-            stack.append((time+1, name, rate, score+rate, state, closed))
+            stack.append((time+1, name, rate, score+rate, state, closed, path))
                 
 print('Part 1:', best_score)
     
