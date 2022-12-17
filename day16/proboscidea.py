@@ -88,7 +88,7 @@ while stack:
             stack.append((time+1, name, rate + valves[name].rate, score+rate, state, new_closed, path))
             stuck = False
         if stuck:
-            stack.append((time+1, name, rate, score+rate, state, closed, path))
+            stack.append((31, name, rate, score+(rate* (31-time)), state, closed, path + [name] * (30-len(path))))
                 
 print('Part 1:', best_score)
     
