@@ -48,11 +48,6 @@ with open(argv[1]) as f:
         tunnels = m.group(3).split(', ')
         valves[name] = Valve(name, rate, tunnels)
 
-# for name in valves.keys():
-#     print(valves[name])
-
-#print(make_graphviz(valves))
-
 best_score = 0
 closed = {name: True for name in valves.keys()}
 stack = [(1, 'AA', 0, 0, set(), closed, [])]
@@ -91,39 +86,3 @@ while stack:
             stack.append((31, name, rate, score+(rate* (31-time)), state, closed, path + [name] * (30-len(path))))
                 
 print('Part 1:', best_score)
-    
-
-# best_score = 0
-# stack = [('AA', 0, set(), 0, 0)]
-# while (stack):
-#     name, time, visited, rate, score = stack.pop()
-#     print(name, time, visited, rate, score, len(stack))
-#     if time > 30:
-#         if score > best_score:
-#             best_score = score
-#             print('new best score!')
-#     elif len(visited) == len(valves):
-#         score += rate * (31 - time)
-#         if score > best_score:
-#             best_score = score
-#             print('new best score!')
-#     else:
-#         score += rate
-#         valve = valves[name]
-#         if valve.closed and valve.rate > 0:
-#             time += 1
-#             if time <= 30:
-#                 rate += valve.rate
-#                 for tunnel in valve.tunnels:
-#                     if tunnel not in visited:
-#                         tmp = set()
-#                         tmp.add(tunnel)
-#                         stack.append((tunnel, time+1, visited | tmp, rate, score))
-#         else:
-#             for tunnel in valve.tunnels:
-#                 if tunnel not in visited:
-#                     tmp = set()
-#                     tmp.add(tunnel)
-#                     stack.append((tunnel, time+1, visited | tmp, rate, score))
-
-# print('Part 1:', best_score)
