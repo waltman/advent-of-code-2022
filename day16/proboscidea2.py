@@ -73,7 +73,7 @@ while stack:
     if time > 26:
         if score > best_score:
             best_score = score
-            print('new best score!', best_score)
+            print('new best score!', best_score, 'rate =', rate)
 #        else:
 #            print('score =', score)
     else:
