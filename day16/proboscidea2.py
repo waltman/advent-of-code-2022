@@ -49,21 +49,28 @@ with open(argv[1]) as f:
         valves[name] = Valve(name, rate, tunnels)
 
 best_score = 0
-closed = {name: True for name in valves.keys()}
-stack = [(1, 'AA', 0, 0, set(), closed, [])]
+closed = {name: True for name in valves.keys() if valves[name].rate > 0}
+stack = [(1, 'AA', 'AA', 0, 0, set(), closed, [], [])]
 while stack:
-    time, name, rate, score, old_state, old_closed, old_path = stack.pop()
-#    print(time, name, rate, score, state, closed)
-#    print(time, name, rate, score, old_path)
+    time, name, ename, rate, score, old_state, old_closed, old_path, old_epath = stack.pop()
+#    print(time, name, ename, rate, score, state, closed)
+#    print(time, name, ename, rate, score, old_path, old_epath)
     state = copy(old_state)
     state.add((name, rate))
+    state.add((ename, rate))
     path = copy(old_path)
     path.append(name[0])
+    epath = copy(old_epath)
+    epath.append(ename[0])
     closed = copy(old_closed)
-    if name == 'EE' and rate == 76:
-        pass
+#    if name == 'EE' and rate == 76:
+#        pass
         
-    if time > 30:
+    if time <= 26 and sum(closed.values()) == 0:
+        stack.append((27, name, ename, rate, score+(rate* (27-time)), state, closed, path + [name] * (26-len(path)), epath + [ename] * (26-len(epath))))
+        continue
+
+    if time > 26:
         if score > best_score:
             best_score = score
             print('new best score!', best_score)
@@ -71,18 +78,41 @@ while stack:
 #            print('score =', score)
     else:
         stuck = True
-        for tunnel in valves[name].tunnels:
-            if (tunnel, rate) not in state:
-#                print('pushing', (tunnel, rate))
-                stack.append((time+1, tunnel, rate, score+rate, state, closed, path))
-                stuck = False
-        if closed[name] and valves[name].rate > 0:
+        if name == ename: # don't open anything, same node (start)
+            for i in range(len(valves[name].tunnels)):
+                etunnel = valves[name].tunnels[i]
+                for j in range(i+1, len(valves[name].tunnels)):
+                    tunnel = valves[name].tunnels[j]
+                    stack.append((time+1, tunnel, etunnel, rate, score+rate, state, closed, path, epath))
+                    stuck = False
+        else:            
+            for tunnel in valves[name].tunnels: # don't open anything
+                if (tunnel, rate) not in state:
+                    for etunnel in valves[ename].tunnels:
+                        if (etunnel, rate) not in state and etunnel != tunnel:
+                            stack.append((time+1, tunnel, etunnel, rate, score+rate, state, closed, path, epath))
+                            stuck = False
+        if valves[name].rate > 0 and closed[name]: # only open my value
             new_closed = copy(closed)
             new_closed[name] = False
-#            print('open pushing', (name, rate + valves[name].rate))
-            stack.append((time+1, name, rate + valves[name].rate, score+rate, state, new_closed, path))
+            for etunnel in valves[ename].tunnels:
+                if etunnel != name:
+                    stack.append((time+1, name, etunnel, rate + valves[name].rate, score+rate, state, new_closed, path, epath))
+                    stuck = False
+        if valves[ename].rate > 0 and closed[ename]: # only open elephant's value
+            new_closed = copy(closed)
+            new_closed[ename] = False
+            for tunnel in valves[name].tunnels:
+                if tunnel != ename:
+                    stack.append((time+1, tunnel, ename, rate + valves[ename].rate, score+rate, state, new_closed, path, epath))
+                    stuck = False
+        if valves[name].rate > 0 and closed[name] and valves[ename].rate > 0 and closed[ename]: # open both valves
+            new_closed = copy(closed)
+            new_closed[name] = False
+            new_closed[ename] = False
+            stack.append((time+1, name, ename, rate + valves[name].rate + valves[ename].rate, score+rate, state, new_closed, path, epath))
             stuck = False
         if stuck:
-            stack.append((31, name, rate, score+(rate* (31-time)), state, closed, path + [name] * (30-len(path))))
+            stack.append((27, name, ename, rate, score+(rate* (27-time)), state, closed, path + [name] * (26-len(path)), epath + [ename] * (26-len(epath))))
                 
 print('Part 1:', best_score)
