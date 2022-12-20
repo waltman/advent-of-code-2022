@@ -19,6 +19,9 @@ class Jet:
     def __getitem__(self, idx):
         return 1 if self.pattern[idx % len(self.pattern)] == '>' else -1
 
+    def offset(self):
+        return self.idx % len(self.pattern)
+
 def draw_cave(cave):
     for row in range(cave.shape[0]-1, 0, -1):
         print('|', end='')
@@ -45,6 +48,15 @@ def dump_cave(cave):
     print(st)
 #    print(count)
 #    print(vals)
+
+def last_n_rows(cave, currow, n):
+    st = ''
+    for row in range(currow - n + 1, currow+1):
+        val = 0
+        for col in range(1,8):
+            val = val * 2 + cave[row,col]
+        st += chr(val)
+    return st
 
 def move_lr(cave, rock, delta, row, lcol):
     cave_copy = copy(cave)
@@ -83,18 +95,21 @@ rocks.append(np.array([[1,1],
                        [1,1]]))
 
 # intialize the cave
-HEIGHT = 3500
+HEIGHT = 10000
+CACHE = 50
 cave = np.zeros([HEIGHT+1, 9], dtype=int)
 cave[0,:] = 1
 cave[:,0] = 1
 cave[:,8] = 1
+TARGET_ROCK_IDX = 1000000000000
 
 with open(argv[1]) as f:
     pattern = f.read().rstrip()
     jet = Jet(pattern)
 
 height = 1
-for rock_idx in range(2022):
+seen = dict()
+for rock_idx in range(5000):
     rock = rocks[rock_idx % len(rocks)]
     lcol = 3
     rcol = lcol + rock.shape[1]-1
@@ -110,6 +125,21 @@ for rock_idx in range(2022):
             rcol = lcol + rock.shape[1]
             cave[row:trow+1, lcol:rcol] += rock
             height = max(height, trow+1)
+
+            # save what we've already seen
+            if height > CACHE:
+                k = (last_n_rows(cave, height, CACHE), jet.offset(), rock_idx % len(rocks))
+                v = (height, rock_idx)
+                if k in seen:
+                    print(f'Key last seen at {seen[k]}. New value: {v}. Offset: ({v[0] - seen[k][0]}, {v[1] - seen[k][1]})')
+                    dheight = v[0] - seen[k][0]
+                    drock = v[1] - seen[k][1]
+                    remaining = TARGET_ROCK_IDX - rock_idx
+                    cycles = remaining // drock
+                    extras = remaining % drock
+                    print(cycles, extras)
+                else:
+                    seen[k] = v
             break
         else:
             row = new_row
