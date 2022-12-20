@@ -17,10 +17,22 @@ class Jet:
     def __getitem__(self, idx):
         return self.pattern[idx % len(self.pattern)]
 
+# initialize the rocks
+rocks = []
+rocks.append(np.array([1,1,1,1]))
+rocks.append(np.array([[0,1,0],
+                       [1,1,1],
+                       [0,1,0]]))
+rocks.append(np.array([[0,0,1],
+                       [0,0,1],
+                       [1,1,1]]))
+rocks.append(np.array([[1],
+                       [1],
+                       [1],
+                       [1]]))
+rocks.append(np.array([[1,1],
+                       [1,1]]))
+
 with open(argv[1]) as f:
     pattern = f.read().rstrip()
     jet = Jet(pattern)
-
-for i in range(80):
-    print(next(jet), end='')
-#    print(jet[i], end='')
