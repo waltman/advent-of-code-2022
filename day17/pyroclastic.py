@@ -1,6 +1,7 @@
 from sys import argv
 import numpy as np
 from copy import copy
+from collections import defaultdict
 
 class Jet:
     def __init__(self, pattern):
@@ -27,6 +28,23 @@ def draw_cave(cave):
         print('|')
     print('+-------+')
     print()
+
+def dump_cave(cave):
+    count = defaultdict(int)
+    vals = []
+    st = ''
+    for row in range(1, cave.shape[0]-1):
+        val = 0
+        for col in range(1,8):
+            val = val * 2 + cave[row,col]
+        count[val] += 1
+        vals.append(val)
+        st += chr(val)
+    tups = [(v,k) for k,v in count.items()]
+    print(sorted(tups))
+    print(st)
+#    print(count)
+#    print(vals)
 
 def move_lr(cave, rock, delta, row, lcol):
     cave_copy = copy(cave)
@@ -77,6 +95,7 @@ with open(argv[1]) as f:
 
 height = 1
 for rock_idx in range(2022):
+#for rock_idx in range(10):
     rock = rocks[rock_idx % len(rocks)]
     lcol = 3
     rcol = lcol + rock.shape[1]-1
@@ -96,3 +115,4 @@ for rock_idx in range(2022):
         else:
             row = new_row
 print('Part 1:', height-1)
+dump_cave(cave)
