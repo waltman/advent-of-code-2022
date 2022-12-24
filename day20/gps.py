@@ -22,21 +22,6 @@ for i in range(1, len(original)):
 cur.succ = head
 head.pred = cur
 
-# cur = head
-# for _ in range(len(original)*2):
-#     print(cur.val)
-#     cur = cur.succ
-# print()
-# cur = head
-# for _ in range(len(original)*2):
-#     print(cur.val)
-#     cur = cur.pred
-# print()
-# cur = head
-# for _ in range(len(original)):
-#     print(f'{cur.val} ', end='')
-#     cur = cur.succ
-# print()
 for ptr in original_ptr:
     # if our value is 0, do nothing
     if ptr.val == 0:
@@ -62,13 +47,6 @@ for ptr in original_ptr:
     new_ptr.succ.pred = ptr
     ptr.pred = new_ptr
     new_ptr.succ = ptr
-
-    # # print out the list
-    # cur = head
-    # for _ in range(len(original)):
-    #     print(f'{cur.val} ', end='')
-    #     cur = cur.succ
-    # print()
 
 # find 0 in the list
 cur = head
