@@ -19,8 +19,7 @@ class Blueprint:
 def best_case_scenario(initial_amount, robots, t):
     return initial_amount + robots * (t + 1) + t * (t + 1) // 2
 
-def search(bp):
-    time    = 24
+def search(bp, time=24):
     best    = 0     # Best number of geodes we are able to collect.
     visited = set() # Visited states.
 
@@ -125,3 +124,9 @@ with open(argv[1]) as f:
     blueprints = [Blueprint(*map(int, re.findall(r'\d+', line))) for line in f]
 
 print('Part 1:', sum(bp.idx * search(bp) for bp in blueprints))
+product = 1
+for i in range(3):
+    res = search(blueprints[i], 32)
+    print(i, res)
+    product *= res
+print('Part 2:', product)
