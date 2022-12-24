@@ -12,8 +12,6 @@ with open(argv[1]) as f:
             rules[monkey] = int(toks[1])
             known.add(monkey)
         else:
-            if toks[2] == '/':
-                toks[2] = '//'
             rules[monkey] = toks[1], toks[2], toks[3]
             unknown.add(monkey)
 
