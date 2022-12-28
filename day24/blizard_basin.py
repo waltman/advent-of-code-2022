@@ -29,9 +29,13 @@ def neighbors(row, col, num_rows, num_cols):
     if row == 0 and col == 1:
         yield 1,1
         return
-    elif row == num_rows and col == num_cols:
-        yield row+1, col
+
+    if row == num_rows+1 and col == num_cols:
+        yield row-1, col
         return
+
+    if row == num_rows and col == num_cols:
+        yield row+1, col
 
     if row > 1:
         yield row-1, col
@@ -94,28 +98,42 @@ print(num_rows, num_cols)
 
 #best = 1e300
 egress = num_rows+1, num_cols
-queue = deque([(0, 0, 1)])
+queue = deque([(0, 0, 1, 0)])
 time_mod = lcm(num_rows, num_cols)
-seen = set()
+seen = [set(), set(), set()]
+part1_done = False
+leg1_done = False
 print('time_mod', time_mod)
 print(egress)
 while queue:
-    minute, row, col = queue.popleft()
+    minute, row, col, leg = queue.popleft()
 #    print('popped', minute, row, col, len(seen), len(queue), best)
-    print('popped', minute, row, col, len(queue))
+    print('popped', minute, row, col, leg, len(queue))
 
     # have we already been in this state?
     seen_minute = minute % time_mod
-    if ((seen_minute, row, col)) in seen:
+    if ((seen_minute, row, col)) in seen[leg]:
 #        print('already seen')
         continue
     else:
-        seen.add((seen_minute, row, col))
+        seen[leg].add((seen_minute, row, col))
 
     # did we find the exit?
     if row == egress[0] and col == egress[1]:
-        print('Part 1:', minute)
-        break
+        if leg == 0 and not part1_done:
+            print('Part 1:', minute)
+            leg = 1
+            part1_done = True
+        elif leg == 2:
+            print('Part 2:', minute)
+            break
+
+    # did we get back to the start?
+    if row == 0 and col == 1 and leg == 1:
+        if not leg1_done:
+            print('Starting leg 2 at minute', minute)
+            leg1_done = True
+        leg = 2
         # if minute < best:
         #     print('New best time!', minute)
         #     best = minute
@@ -130,12 +148,12 @@ while queue:
     blizzard_locs = {blizzard.pos_at(minute, num_rows, num_cols) for blizzard in blizzards}
 #    if (row, col) not in blizzard_locs and (minute % time_mod, row, col) not in seen:
     if (row, col) not in blizzard_locs:
-        queue.append((minute, row, col))
+        queue.append((minute, row, col, leg))
 
     for new_row, new_col in neighbors(row, col, num_rows, num_cols):
 #        if (new_row, new_col) not in blizzard_locs and (minute % time_mod, new_row, new_col) not in seen:
         if (new_row, new_col) not in blizzard_locs:
-            queue.append((minute, new_row, new_col))
+            queue.append((minute, new_row, new_col, leg))
 
 #    if (row, col) not in blizzard_locs and (row, col) != (0,1):
 
