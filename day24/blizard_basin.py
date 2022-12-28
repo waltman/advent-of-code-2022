@@ -81,39 +81,24 @@ with open(argv[1]) as f:
                             blizzards.append(DownBlizzard(row, col))
         row += 1
 
-print(num_rows, num_cols, goal)
+#print(num_rows, num_cols, goal)
 #print(blizzards)
 
 num_rows -= 2
 num_cols -= 1
-print(num_rows, num_cols)
-# for minute in range(10):
-#     print(minute)
-#     for blizzard in blizzards:
-#         print(blizzard.pos_at(minute, num_rows, num_cols))
-# print('done')
-
-# for row, col in neighbors(2, 5, num_rows, num_cols):
-#     print('neighbor', row, col)
-
-#best = 1e300
 egress = num_rows+1, num_cols
 queue = deque([(0, 0, 1, 0)])
 time_mod = lcm(num_rows, num_cols)
 seen = [set(), set(), set()]
 part1_done = False
 leg1_done = False
-print('time_mod', time_mod)
-print(egress)
 while queue:
     minute, row, col, leg = queue.popleft()
-#    print('popped', minute, row, col, len(seen), len(queue), best)
-    print('popped', minute, row, col, leg, len(queue))
+#    print('popped', minute, row, col, leg, len(queue))
 
     # have we already been in this state?
     seen_minute = minute % time_mod
     if ((seen_minute, row, col)) in seen[leg]:
-#        print('already seen')
         continue
     else:
         seen[leg].add((seen_minute, row, col))
@@ -134,27 +119,12 @@ while queue:
             print('Starting leg 2 at minute', minute)
             leg1_done = True
         leg = 2
-        # if minute < best:
-        #     print('New best time!', minute)
-        #     best = minute
-        # continue
-    
-    # # are we too far away to beat the best time
-    # if minute + (egress[0]-row) + (egress[1]-col) >= best:
-    #     print('too far away')
-    #     continue
 
     minute += 1
     blizzard_locs = {blizzard.pos_at(minute, num_rows, num_cols) for blizzard in blizzards}
-#    if (row, col) not in blizzard_locs and (minute % time_mod, row, col) not in seen:
     if (row, col) not in blizzard_locs:
         queue.append((minute, row, col, leg))
 
     for new_row, new_col in neighbors(row, col, num_rows, num_cols):
-#        if (new_row, new_col) not in blizzard_locs and (minute % time_mod, new_row, new_col) not in seen:
         if (new_row, new_col) not in blizzard_locs:
             queue.append((minute, new_row, new_col, leg))
-
-#    if (row, col) not in blizzard_locs and (row, col) != (0,1):
-
-#print('Part 1:', best)
